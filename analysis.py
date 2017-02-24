@@ -54,5 +54,4 @@ class Analysis:
         return gprmc
 
 if __name__ == "__main__":
-    from unitTest import unittest
-    unittest.main()
+    Analysis().main()
