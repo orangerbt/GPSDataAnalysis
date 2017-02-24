@@ -8,7 +8,7 @@ class UnitTests(unittest.TestCase):
         a.main()
         self.assertEqual(len(a.gprmc), 10)
         self.assertEqual(len(a.gprmc[1]), 8)
-        self.assertEqual(len(a.gprmc[7]), 8)
+        self.assertEqual(len(a.gprmc[7]), 10)
         self.assertEqual(a.gprmc[0], "Recommended minimum specific GPS/Transit data")
         
 if __name__ == "__main__":
