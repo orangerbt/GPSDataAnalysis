@@ -1,17 +1,19 @@
 class Analysis:
+
+    # Initialize the class variables
+    def __init__(self):
+        self.gprmc = [0] * 10
+        self.gprmc[0] = "Recommended minimum specific GPS/Transit data"
+        
     def main(self):
         infile = open("gnss.txt", "r")
         lines = infile.readlines()
-
-        gprmc = [0] * 10
-        gprmc[0] = "Recommended minimum specific GPS/Transit data"
-
+        
         for line in lines:
             line = line.split(",")
 
             if line[0] == "$GPRMC":
-                gprmc = self.gprmcParse(gprmc, line)
-                print(gprmc)
+                self.gprmc = self.gprmcParse(self.gprmc, line)
 
 
     '''
@@ -52,5 +54,5 @@ class Analysis:
         return gprmc
 
 if __name__ == "__main__":
-    analysis = Analysis()
-    analysis.main()
+    from unitTest import unittest
+    unittest.main()
