@@ -22,10 +22,10 @@ class Analysis:
     gprmc[0] - "Recommended minimum specific GPS/Transit data"
     gprmc[1] - Time of fix, UTC
     gprmc[2] - Navigation receiver warning (either OK or WARNING)
-    gprmc[3] - Latitude, format: [degrees, minutes, cardinal direction]
-    gprmc[4] - Longitude, format: [degrees, minutes, cardinal directon]
+    gprmc[3] - Latitude, in degrees (+ indicates North, - indicates South)
+    gprmc[4] - Longitude, in degrees (+ indicates East, - indicates West)
     gprmc[5] - Speed over ground (in knots)
-    gprmc[6] - Course Made Good
+    gprmc[6] - Course (in degrees)
     gprmc[7] - Date of fix, YY/MM/DD
     gprmc[8] - Magnetic variation, format: [degrees, cardinal direction]
     gprmc[9] - Checksum
@@ -35,22 +35,31 @@ class Analysis:
         gprmc[1] = line[1][0:2] + ":" + line[1][2:4] + ":" + line[1][4:6]
         gprmc[2] = "OK" if line[2] == "A" else "WARNING"
 
-        gprmc[3] = [line[3][-4:]]
-        line[3] = line[3][-4:]
-        gprmc[3].append(line[3])
-        gprmc[3].append(line[4])
+        directionLat = "+" if line[4] == "N" else "-"
+        if line[3] != "":
+            latitude = float(line[3][:-5] + (float(line[3][-5:]) / 60))
+        else:
+            latitude = 0.0
+        gprmc[3] = directionLat + str(latitude)
 
-        gprmc[4] = [line[5][-4:]]
-        line[5] = line[5][-4:]
-        gprmc[4].append(line[5])
-        gprmc[4].append(line[6])
+        directionLong = "+" if line[6] == "E" else "-"
+        if line[5] != "":
+            longitude = float(line[5][:-5] + (float(line[3][-5:]) / 60))
+        else:
+            longitude = 0.0
+        gprmc[4] = directionLong + str(longitude)
 
         gprmc[5] = line[7]
         gprmc[6] = line[8]
-        gprmc[7] = line[9][4:6] + "/" + line[9][0:2] + "/" + line[9][2:4]
-        gprmc[8] = [line[10], line[11]]
+        
+        year = ("20" if float(line[9][4:6]) < 50 else "19") + line[9][4:6]
+        gprmc[7] = year + "-" + line[9][0:2] + "-" + line[9][2:4]
+        
+        directionMag = "+" if line[11] == "E" else "-"
+        gprmc[8] = directionMag + line[10]
+        
         gprmc[9] = line[12]
-
+        
         return gprmc
 
 if __name__ == "__main__":
