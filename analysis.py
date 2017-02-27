@@ -67,24 +67,20 @@ class Analysis:
         return gprmc
 
 
-'''
-GPGGA Properties
+    '''
+    GPGGA Properties
 
-gpgga[0] - Global Positioning System Fix Data
-gpgga[1] - Time of position, UTC
-gpgga[2] - Latitude of position, in degrees
-gpgga[3] - Orientation, North (+) or South (-)
-gpgga[4] - Longitude of position, in degrees
-gpgga[5] - Orientation, East (+) or West (-)
-gpgga[6] - GPS Fix data
-gpgga[7] - Number of satellites in view
-gpgga[8] - Horizontal Dilution of Precision, how accurate the horizontal position is
-gpgga[9] - Altitude, the height above mean sea level and the units (feet, meters)
-gpgga[10] - Height of the geoid above WGS84 Ellipsoid with units (feet, meters)
-gpgga[11] - Time since last DGPS update
-gpgga[12] - DGPS reference station id
-gpgga[13] - Checksum
-'''
+    gpgga[0] - "Global Positioning System Fix Data"
+    gpgga[1] - Time of position, UTC
+    gpgga[2] - Latitude of position, in degrees (North +, South -)
+    gpgga[3] - Longitude of position, in degrees (East +, West -)
+    gpgga[4] - GPS Fix data
+    gpgga[5] - Number of satellites in view
+    gpgga[6] - Horizontal Dilution of Precision, how accurate the horizontal position is
+    gpgga[7] - Altitude, the height above mean sea level and the units (F = feet, M = meters)
+    gpgga[8] - Height of the geoid above WGS84 Ellipsoid with units (F = feet, M = meters)
+    gpgga[9] - Checksum
+    '''
 
     def gpggaParse(self, gpgga, line):
         gpgga[1] = line[1][0:2] + ":" + line[1][2:4] + ":" + line[1][4:6]
@@ -111,7 +107,7 @@ gpgga[13] - Checksum
         gpgga[7] = line[9] + line[10]
         gpgga[8] = line[11] + line[12]
         gpgga[9] = line[13]
-        print(gpgga)
+        
         return gpgga
 
 if __name__ == "__main__":
