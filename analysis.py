@@ -86,7 +86,7 @@ gpgga[12] - DGPS reference station id
 gpgga[13] - Checksum
 '''
 
-def gpggaParse(self, gpgga, line):
+    def gpggaParse(self, gpgga, line):
         gpgga[1] = line[1][0:2] + ":" + line[1][2:4] + ":" + line[1][4:6]
         directionLat = "+" if line[3] == "N" else "-"
         if line[2] != "":
