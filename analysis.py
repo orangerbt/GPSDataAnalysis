@@ -64,8 +64,12 @@ class Analysis:
         
         gprmc[9] = line[12]
         
-        return gprmc
-
+        if self.verifyChecksum(line, gprmc[9]):
+            return gprmc
+        else:
+            raise Exception("Checksum is incorrect! \n" +
+                            "gprmc: " + gprmc + "\n" +
+                            "line: " + line)     
 
     '''
     GPGGA Properties
@@ -106,9 +110,23 @@ class Analysis:
         gpgga[6] = line[8]
         gpgga[7] = line[9] + line[10]
         gpgga[8] = line[11] + line[12]
-        gpgga[9] = line[13]
+        gpgga[9] = line[14]
         
-        return gpgga
+        if self.verifyChecksum(line, gpgga[9]):
+            return gpgga
+        else:
+            raise Exception("Checksum is incorrect! \n" +
+                            "gpgga: " + str(gpgga) + "\n" +
+                            "line: " + str(line))
 
+    def verifyChecksum(self, line, checksum):
+        wholeString = ",".join(line)
+        calculatedSum = 0
+        for char in wholeString[1:-5]:
+            calculatedSum = calculatedSum ^ ord(char)
+        checksum = checksum.split("*",1)[1]
+        checksum = checksum[:-2]
+        return int(checksum, 16) == calculatedSum
+    
 if __name__ == "__main__":
     Analysis().main()
