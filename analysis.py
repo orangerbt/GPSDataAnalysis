@@ -4,7 +4,9 @@ class Analysis:
     def __init__(self):
         self.gprmc = [0] * 10
         self.gprmc[0] = "Recommended minimum specific GPS/Transit data"
-        
+        self.gpgga = [0] * 10
+        self.gpgga[0] = "Global Positioning System Fix Data"
+
     def main(self):
         infile = open("gnss.txt", "r")
         lines = infile.readlines()
@@ -14,6 +16,8 @@ class Analysis:
 
             if line[0] == "$GPRMC":
                 self.gprmc = self.gprmcParse(self.gprmc, line)
+            if line[0] == "$GPGGA":
+                self.gpgga = self.gpggaParse(self.gpgga, line)
 
 
     '''
@@ -61,6 +65,54 @@ class Analysis:
         gprmc[9] = line[12]
         
         return gprmc
+
+
+'''
+GPGGA Properties
+
+gpgga[0] - Global Positioning System Fix Data
+gpgga[1] - Time of position, UTC
+gpgga[2] - Latitude of position, in degrees
+gpgga[3] - Orientation, North (+) or South (-)
+gpgga[4] - Longitude of position, in degrees
+gpgga[5] - Orientation, East (+) or West (-)
+gpgga[6] - GPS Fix data
+gpgga[7] - Number of satellites in view
+gpgga[8] - Horizontal Dilution of Precision, how accurate the horizontal position is
+gpgga[9] - Altitude, the height above mean sea level and the units (feet, meters)
+gpgga[10] - Height of the geoid above WGS84 Ellipsoid with units (feet, meters)
+gpgga[11] - Time since last DGPS update
+gpgga[12] - DGPS reference station id
+gpgga[13] - Checksum
+'''
+
+def gpggaParse(self, gpgga, line):
+        gpgga[1] = line[1][0:2] + ":" + line[1][2:4] + ":" + line[1][4:6]
+        directionLat = "+" if line[3] == "N" else "-"
+        if line[2] != "":
+            latitude = float(float(line[2][:-7]) + (float(line[2][-7:]) / 60))
+        else:
+            latitude = 0.0
+        gpgga[2] = directionLat + str(latitude)
+        directionLon = "+" if line[5] == "E" else "-"
+        if line[4] != "":
+            longitude = float(float(line[4][:-7]) + (float(line[4][-7:]) / 60))
+        else:
+            longitude = 0.0
+        gpgga[3] = directionLon + str(longitude)
+        if line[6] == "0":
+            gpgga[4] = "Invalid"
+        elif line[6] == "1":
+            gpgga[4] = "GPS Fix"
+        else:
+            gpgga[4] = "DGPS Fix"
+        gpgga[5] = line[7]
+        gpgga[6] = line[8]
+        gpgga[7] = line[9] + line[10]
+        gpgga[8] = line[11] + line[12]
+        gpgga[9] = line[13]
+        print(gpgga)
+        return gpgga
 
 if __name__ == "__main__":
     Analysis().main()
