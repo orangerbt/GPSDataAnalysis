@@ -66,10 +66,6 @@ class Analysis:
         
         if self.verifyChecksum(line, gprmc[9]):
             return gprmc
-        else:
-            raise Exception("Checksum is incorrect! \n" +
-                            "gprmc: " + gprmc + "\n" +
-                            "line: " + line)     
 
     '''
     GPGGA Properties
@@ -114,18 +110,24 @@ class Analysis:
         
         if self.verifyChecksum(line, gpgga[9]):
             return gpgga
-        else:
-            raise Exception("Checksum is incorrect! \n" +
-                            "gpgga: " + str(gpgga) + "\n" +
-                            "line: " + str(line))
 
     def verifyChecksum(self, line, checksum):
-        wholeString = ",".join(line)
+        # Take the entire sentence string and remove the initial $ and the * and everything after it
+        sumString = ",".join(line)[1:-5]
         calculatedSum = 0
-        for char in wholeString[1:-5]:
+        for char in sumString:
             calculatedSum = calculatedSum ^ ord(char)
         checksum = checksum.split("*",1)[1]
         checksum = checksum[:-2]
+
+        # int(string, 16) translates a string representing a hexidecimal number to a decimal integer.
+        # For example, int("4C", 16) returns 76.
+        if int(checksum, 16) == calculatedSum:
+            return True
+        else:
+            raise Exception("Checksum is incorrect! \n" +
+                            "Expected " + checksum + ", calculated " + str(hex(calculatedSum)) + "\n"
+                            "when parsing line: " + str(line))
         return int(checksum, 16) == calculatedSum
     
 if __name__ == "__main__":
