@@ -171,7 +171,7 @@ class Analysis:
          gpvtg[2] = ("0.00" if line[3] == "" else line[3])+line[4]
          gpvtg[3] = line[5] + line[6]
          gpvtg[4] = line[7] + line[8]
-	 gpvtg[5] = line[9]
+         gpvtg[5] = line[9]
          if self.verifyChecksum(line, gpvtg[5]):
              return gpvtg
 
