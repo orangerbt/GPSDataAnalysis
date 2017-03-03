@@ -23,8 +23,6 @@
 
 * GPGSV
 
-* GLGSV (docs for this here: http://www.cypress.bc.ca/documents/Report_Messages/CTM200/msg_127_GLGSV.html)
-
 ## Credits
 Max Burggraf
 
