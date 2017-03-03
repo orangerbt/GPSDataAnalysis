@@ -160,13 +160,14 @@ class Analysis:
   	 gpvtg[1] - True track made good
    	 gpvtg[2] - Magnetic track made good
    	 gpvtg[3] - Ground speed, knots
-   	 gpvtg[4] - ground speed, Kimometers per hour
+   	 gpvtg[4] - ground speed, Kilometers per hour
    	 gpvtg[5] - Checksum
 
    	 '''
 
     def gpvtgParse(self, gpvtg, line):
          gpvtg[1] = line[1] + line[2]
+	 #The data we recive for this field can be empty, so we chekc for it being empty here and insert 0.00 if it is
          gpvtg[2] = ("0.00" if line[3] == "" else line[3])+line[4]
          gpvtg[3] = line[5] + line[6]
          gpvtg[4] = line[7] + line[8]
