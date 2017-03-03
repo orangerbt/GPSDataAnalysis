@@ -7,3 +7,9 @@ Goals:
 Resources:
 	http://www.gpsinformation.org/dale/nmea.htm
 	http://aprs.gids.nl/nmea/
+	
+Credits:
+Max Burggraf
+Stephen Bergested
+Drew Jacobson
+Gabe Smolnycki
