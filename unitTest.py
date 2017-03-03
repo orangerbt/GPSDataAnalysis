@@ -41,9 +41,22 @@ class UnitTests(unittest.TestCase):
         
         with self.assertRaises(Exception):
             gpgllStub = [0] * 6
-            ## the checksum on this should be 70, but it is 71
+            # the checksum on this should be 70, but it is 71
             lineStub = ["$GPGLL","","","","","220651.080","V","N*71\r\n"] 
             a.gpgllParse(gpgllStub,lineStub)
+
+
+    def testGpvtg(self):
+	a = Analysis()
+	a.main()
+	self.assertEqual(a.gpvtg[0], "Track Made Good and Ground Speed")
+	self.assertEqual(len(a.gpvtg), 6)
+
+	with self.assertRaises(Exception):
+	    gpvtgStub = [0] * 6
+	    # the checksum on this should be A*3E, but it is A*4E
+	    lineStub = ["$GPVTG","176.74","T","","M","0.00","N","0.00","K","A*4E"]
+	    a.gpvtgParse(gpvtgStub,lineStub)
 
         
 
