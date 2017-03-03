@@ -6,6 +6,8 @@ class Analysis:
         self.gprmc[0] = "Recommended minimum specific GPS/Transit data"
         self.gpgga = [0] * 10
         self.gpgga[0] = "Global Positioning System Fix Data"
+        self.gpgll = [0] * 6
+        self.gpgll[0] = "Geographic position, Latitude and Longitude"
 
     def main(self):
         infile = open("gnss.txt", "r")
@@ -18,6 +20,8 @@ class Analysis:
                 self.gprmc = self.gprmcParse(self.gprmc, line)
             if line[0] == "$GPGGA":
                 self.gpgga = self.gpggaParse(self.gpgga, line)
+            if line[0] == "$GPGLL":
+                self.gpgll = self.gpgllParse(self.gpgll, line)
 
 
     '''
@@ -111,6 +115,37 @@ class Analysis:
         if self.verifyChecksum(line, gpgga[9]):
             return gpgga
 
+        '''
+        GPGLL Properties
+
+        gpgll[0] - "Geographic position, Latitude and Longitude"
+        gpgll[1] - Latitude of position, in degrees (North +, South -)
+        gpgll[2] - Longitude of position, in degrees (East +, West -)
+        gpgll[3] - Time of position, UTC
+        gpgll[4] - Data Active or V (void)
+        gpgll[5] - checksum data
+
+        '''        
+
+    def gpgllParse(self, gpgll, line):
+         if line[1] != "":
+            latitude = float(float(line[1][:-5]) + (float(line[1][-5:]) / 60))
+         else:
+            latitude = 0.0
+         directionLat = "+" if line[2] == "N" else "-"
+         gpgll[1] = directionLat + str(latitude)
+         if line[3] != "":
+            longitude = float(float(line[3][:-5]) + (float(line[3][-5:]) / 60))
+         else:
+            longitude = 0.0
+         directionLong = "+" if line[4] == "E" else "-"
+         gpgll[2] = directionLong + str(longitude)
+         gpgll[3] = line[5][0:2] + ":" + line[5][2:4] + ":" + line[5][4:6]
+         gpgll[4] = "Data Active" if line[6] == "A" else "Void" 
+         gpgll[5] = line[7]
+         if self.verifyChecksum(line, gpgll[5]):
+             return gpgll
+
     def verifyChecksum(self, line, checksum):
         # Take the entire sentence string and remove the initial $ and the * and everything after it
         sumString = ",".join(line)[1:-5]
@@ -129,6 +164,8 @@ class Analysis:
                             "Expected " + checksum + ", calculated " + str(hex(calculatedSum)) + "\n"
                             "when parsing line: " + str(line))
         return int(checksum, 16) == calculatedSum
+
+
     
 if __name__ == "__main__":
     Analysis().main()
