@@ -31,6 +31,21 @@ class UnitTests(unittest.TestCase):
                         'W', '1', '6', '4.18', '181.8', 'M', '-34.0', 'M', '',
                         '*6D\r\n']
             a.gpggaParse(gpggaStub, lineStub)
+
+    def testGpgll(self):
+        a = Analysis()
+        a.main()
+        self.assertEqual(a.gpgll[0], "Geographic position, Latitude and Longitude")
+        self.assertEqual(len(a.gpgll), 6)
+       
         
+        with self.assertRaises(Exception):
+            gpgllStub = [0] * 6
+            ## the checksum on this should be 70, but it is 71
+            lineStub = ["$GPGLL","","","","","220651.080","V","N*71\r\n"] 
+            a.gpgllParse(gpgllStub,lineStub)
+
+        
+
 if __name__ == "__main__":
     unittest.main()
