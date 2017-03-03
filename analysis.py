@@ -8,6 +8,8 @@ class Analysis:
         self.gpgga[0] = "Global Positioning System Fix Data"
         self.gpgll = [0] * 6
         self.gpgll[0] = "Geographic position, Latitude and Longitude"
+        self.gpvtg = [0] * 6
+        self.gpvtg[0] = "Track Made Good and Ground Speed"
 
     def main(self):
         infile = open("gnss.txt", "r")
@@ -22,7 +24,10 @@ class Analysis:
                 self.gpgga = self.gpggaParse(self.gpgga, line)
             if line[0] == "$GPGLL":
                 self.gpgll = self.gpgllParse(self.gpgll, line)
+            if line[0] == "$GPVTG":
+                self.gpvtg = self.gpvtgParse(self.gpvtg, line)
 
+   
 
     '''
     GPRMC properties
@@ -145,6 +150,29 @@ class Analysis:
          gpgll[5] = line[7]
          if self.verifyChecksum(line, gpgll[5]):
              return gpgll
+
+
+ 	'''
+    	GPVTG properties
+    
+   	gpvtg[0] - "Track Made Good and Ground Speed"
+  	gpvtg[1] - True track made good
+   	gpvtg[2] - Magnetic track made good
+   	gpvtg[3] - Ground speed, knots
+   	gpvtg[4] - ground speed, Kimometers per hour
+   	gpvtg[5] - Checksum
+   	'''
+
+    
+    def gpvtgParse(self, gpvtg, line):
+        gpvtg[1] = line[1] + line[2]
+        gpvtg[2] = ("0.00" if line[3] == "" else line[3])+line[4]
+        gpvtg[3] = line[5] + line[6]
+        gpvtg[4] = line[7] + line[8]
+	gpvtg[5] = line[9]
+        print(gpvtg)
+        if self.verifyChecksum(line, gpvtg[5]):
+            return gpvtg
 
     def verifyChecksum(self, line, checksum):
         # Take the entire sentence string and remove the initial $ and the * and everything after it
