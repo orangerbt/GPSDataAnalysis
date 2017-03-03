@@ -1,15 +1,36 @@
 # GPSDataAnalysis
 
-Goals:
+## Goals
 	Take in the raw GPS data and return the position, velocity (magnitude and direction, both horizontal and vertical), and acceleration, total time elapsed, maximum altitude
 	Graphs of P/t, V/t, A/t graphs and use the Google API to plot the trajectory on a map
 
-Resources:
+## Resources
 	http://www.gpsinformation.org/dale/nmea.htm
 	http://aprs.gids.nl/nmea/
-	
-Credits:
+
+## TODO
+### Parse these
+
+* ~~GPGLL~~
+
+* ~~GPGGA~~
+
+* ~~GPRMC~~
+
+* GPVTG
+
+* GPGSA
+
+* GPGSV
+
+* GLGSV (docs for this here: http://www.cypress.bc.ca/documents/Report_Messages/CTM200/msg_127_GLGSV.html)
+
+## Credits
 Max Burggraf
+
 Stephen Bergested
+
 Drew Jacobson
+
 Gabe Smolnycki
+
