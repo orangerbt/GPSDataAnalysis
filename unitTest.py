@@ -54,11 +54,23 @@ class UnitTests(unittest.TestCase):
 
 	with self.assertRaises(Exception):
 	    gpvtgStub = [0] * 6
-	    # the checksum on this should be A*3E, but it is A*4E
+	    # the checksum on this should be 3E, but it is 4E
 	    lineStub = ["$GPVTG","176.74","T","","M","0.00","N","0.00","K","A*4E"]
 	    a.gpvtgParse(gpvtgStub,lineStub)
 
-        
+    def testGpgsa(self):
+        a = Analysis()
+        a.main()
+        self.assertEqual(a.gpgsa[0], "GPS DOP and active satellites")
+        self.assertEqual(len(a.gpgsa), 8)
+
+        with self.assertRaises(Exception):
+            gpgsaStub = [0] * 8
+            # the checksum on this should be 1E, but it is 1C
+            lineStub = ['GPS DOP and active satellites', 'Automatic', 'No Fix',
+                        ['', '', '', '', '', '', '', '', ''], '', '', '',
+                        '*1C\r\n']
+            a.gpgsaParse(gpgsaStub, lineStub)
 
 if __name__ == "__main__":
     unittest.main()
