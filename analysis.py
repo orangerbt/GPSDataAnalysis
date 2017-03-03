@@ -152,27 +152,27 @@ class Analysis:
              return gpgll
 
 
- 	'''
-    	GPVTG properties
-    
-   	gpvtg[0] - "Track Made Good and Ground Speed"
-  	gpvtg[1] - True track made good
-   	gpvtg[2] - Magnetic track made good
-   	gpvtg[3] - Ground speed, knots
-   	gpvtg[4] - ground speed, Kimometers per hour
-   	gpvtg[5] - Checksum
-   	'''
+ 	 '''
 
+    	 GPVTG properties
     
+   	 gpvtg[0] - "Track Made Good and Ground Speed"
+  	 gpvtg[1] - True track made good
+   	 gpvtg[2] - Magnetic track made good
+   	 gpvtg[3] - Ground speed, knots
+   	 gpvtg[4] - ground speed, Kimometers per hour
+   	 gpvtg[5] - Checksum
+
+   	 '''
+
     def gpvtgParse(self, gpvtg, line):
-        gpvtg[1] = line[1] + line[2]
-        gpvtg[2] = ("0.00" if line[3] == "" else line[3])+line[4]
-        gpvtg[3] = line[5] + line[6]
-        gpvtg[4] = line[7] + line[8]
-	gpvtg[5] = line[9]
-        print(gpvtg)
-        if self.verifyChecksum(line, gpvtg[5]):
-            return gpvtg
+         gpvtg[1] = line[1] + line[2]
+         gpvtg[2] = ("0.00" if line[3] == "" else line[3])+line[4]
+         gpvtg[3] = line[5] + line[6]
+         gpvtg[4] = line[7] + line[8]
+	 gpvtg[5] = line[9]
+         if self.verifyChecksum(line, gpvtg[5]):
+             return gpvtg
 
     def verifyChecksum(self, line, checksum):
         # Take the entire sentence string and remove the initial $ and the * and everything after it
