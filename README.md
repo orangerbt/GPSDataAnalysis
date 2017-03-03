@@ -17,7 +17,7 @@
 
 * ~~GPRMC~~
 
-* GPVTG
+* ~~GPVTG~~
 
 * GPGSA
 
