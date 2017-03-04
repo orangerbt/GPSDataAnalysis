@@ -10,6 +10,8 @@ class Analysis:
         self.gpgll[0] = "Geographic position, Latitude and Longitude"
         self.gpvtg = [0] * 6
         self.gpvtg[0] = "Track Made Good and Ground Speed"
+        self.gpgsa = [0] * 8
+        self.gpgsa[0] = "GPS DOP and active satellites"
 
     def main(self):
         infile = open("gnss.txt", "r")
@@ -26,6 +28,8 @@ class Analysis:
                 self.gpgll = self.gpgllParse(self.gpgll, line)
             if line[0] == "$GPVTG":
                 self.gpvtg = self.gpvtgParse(self.gpvtg, line)
+            if line[0] == "$GPGSA":
+                self.gpgsa = self.gpgsaParse(self.gpgsa, line)
 
    
 
@@ -174,6 +178,40 @@ class Analysis:
          gpvtg[5] = line[9]
          if self.verifyChecksum(line, gpvtg[5]):
              return gpvtg
+
+         '''
+         GPGSA properties
+
+         gpgsa[0] - "GPS DOP and active satellites"
+         gpgsa[1] - selection of 2D or 3D fix, A for auto, M for manual
+         gpgsa[2] - Fix dimensions, 1 for no fix, 2 for 2D fix, 3 for 3D fix
+         gpgsa[3] - List of PRNs of satellites used for fix (space for 12)
+         gpgsa[4] - PDOP (dilution of precision) 
+         gpgsa[5] - Horizontal dilution of precision (HDOP)
+         gpgsa[6] - Vertical dilution of precision (VDOP)
+         gpgsa[7] - Checksum
+         
+         '''
+    def gpgsaParse(self, gpgsa, line):
+        gpgsa[1] = "Automatic" if line[1] == "A" else "Manual"
+
+        if line[2] == "1":
+            gpgsa[2] = "No Fix"
+        elif line[2] == "2":
+            gpgsa[2] = "2D Fix"
+        elif line[2] == "3":
+            gpgsa[2] = "3D Fix"
+        else:
+            gpgsa[2] = "Fix not defined"
+
+        gpgsa[3] = line[4:13]
+        gpgsa[4] = line[14]
+        gpgsa[5] = line[15]
+        gpgsa[6] = line[16]
+        gpgsa[7] = line[17]
+
+        if self.verifyChecksum(line, gpgsa[7]):
+            return gpgsa
 
     def verifyChecksum(self, line, checksum):
         # Take the entire sentence string and remove the initial $ and the * and everything after it
