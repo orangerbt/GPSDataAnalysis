@@ -12,6 +12,8 @@ class Analysis:
         self.gpvtg[0] = "Track Made Good and Ground Speed"
         self.gpgsa = [0] * 8
         self.gpgsa[0] = "GPS DOP and active satellites"
+        self.gpgsv = [0] * 9
+        self.gpgsv[0] = "GPS Satellites in View"
 
     def main(self):
         infile = open("gnss.txt", "r")
@@ -30,6 +32,8 @@ class Analysis:
                 self.gpvtg = self.gpvtgParse(self.gpvtg, line)
             if line[0] == "$GPGSA":
                 self.gpgsa = self.gpgsaParse(self.gpgsa, line)
+            if line[0] == "$GPGSV":
+                self.gpgsv = self.gpgsvParse(self.gpgsv, line)
 
    
 
@@ -124,17 +128,17 @@ class Analysis:
         if self.verifyChecksum(line, gpgga[9]):
             return gpgga
 
-        '''
-        GPGLL Properties
+    '''
+    GPGLL Properties
 
-        gpgll[0] - "Geographic position, Latitude and Longitude"
-        gpgll[1] - Latitude of position, in degrees (North +, South -)
-        gpgll[2] - Longitude of position, in degrees (East +, West -)
-        gpgll[3] - Time of position, UTC
-        gpgll[4] - Data Active or V (void)
-        gpgll[5] - checksum data
+    gpgll[0] - "Geographic position, Latitude and Longitude"
+    gpgll[1] - Latitude of position, in degrees (North +, South -)
+    gpgll[2] - Longitude of position, in degrees (East +, West -)
+    gpgll[3] - Time of position, UTC
+    gpgll[4] - Data Active or V (void)
+    gpgll[5] - checksum data
 
-        '''        
+    '''        
 
     def gpgllParse(self, gpgll, line):
          if line[1] != "":
@@ -156,18 +160,18 @@ class Analysis:
              return gpgll
 
 
- 	 '''
+    '''
 
-    	 GPVTG properties
+    GPVTG properties
     
-   	 gpvtg[0] - "Track Made Good and Ground Speed"
-  	 gpvtg[1] - True track made good
-   	 gpvtg[2] - Magnetic track made good
-   	 gpvtg[3] - Ground speed, knots
-   	 gpvtg[4] - ground speed, Kilometers per hour
-   	 gpvtg[5] - Checksum
+    gpvtg[0] - "Track Made Good and Ground Speed"
+    gpvtg[1] - True track made good
+    gpvtg[2] - Magnetic track made good
+    gpvtg[3] - Ground speed, knots
+    gpvtg[4] - ground speed, Kilometers per hour
+    gpvtg[5] - Checksum
 
-   	 '''
+    '''
 
     def gpvtgParse(self, gpvtg, line):
          gpvtg[1] = line[1] + line[2]
@@ -179,19 +183,19 @@ class Analysis:
          if self.verifyChecksum(line, gpvtg[5]):
              return gpvtg
 
-         '''
-         GPGSA properties
+    '''
+    GPGSA properties
 
-         gpgsa[0] - "GPS DOP and active satellites"
-         gpgsa[1] - selection of 2D or 3D fix, A for auto, M for manual
-         gpgsa[2] - Fix dimensions, 1 for no fix, 2 for 2D fix, 3 for 3D fix
-         gpgsa[3] - List of PRNs of satellites used for fix (space for 12)
-         gpgsa[4] - PDOP (dilution of precision) 
-         gpgsa[5] - Horizontal dilution of precision (HDOP)
-         gpgsa[6] - Vertical dilution of precision (VDOP)
-         gpgsa[7] - Checksum
+    gpgsa[0] - "GPS DOP and active satellites"
+    gpgsa[1] - selection of 2D or 3D fix, A for auto, M for manual
+    gpgsa[2] - Fix dimensions, 1 for no fix, 2 for 2D fix, 3 for 3D fix
+    gpgsa[3] - List of PRNs of satellites used for fix (space for 12)
+    gpgsa[4] - PDOP (dilution of precision) 
+    gpgsa[5] - Horizontal dilution of precision (HDOP)
+    gpgsa[6] - Vertical dilution of precision (VDOP)
+    gpgsa[7] - Checksum
          
-         '''
+    '''
     def gpgsaParse(self, gpgsa, line):
         gpgsa[1] = "Automatic" if line[1] == "A" else "Manual"
 
@@ -212,6 +216,52 @@ class Analysis:
 
         if self.verifyChecksum(line, gpgsa[7]):
             return gpgsa
+        
+    '''
+    GPGSV properties
+
+    gpgsv[0] - "GPS Satellites in View"
+    gpgsv[1] - Number of sentences for full data
+    gpgsv[2] - The sentence number
+    gpgsv[3] - The number of satellites in view
+    gpgsv[4] - Information on satelite in view
+               [Information on Satellite PRN number; Elevation in  degrees,
+               90 maximum; Azimuth, degrees from true north, 000 to 359; 
+               SNR 00-99db (null when not tracking)]
+    gpgsv[5] - Information about second SV, same as gpgsv[4]
+    gpgsv[6] - Information third second SV, same as gpgsv[4]
+    gpgsv[7] - Information fourth second SV, same as gpgsv[4]
+    gpgsv[8] - Checksum
+    *Depending on the amount of satellites in view, gpgsv[5-7] may not exist. 
+    In that case, the location of the checksum is gpgsv[len(gpgsv)-1] 
+    '''
+        
+    def gpgsvParse(self, gpgsv, line):
+        del gpgsv[1:]
+        gpgsv.append(line[1])
+        gpgsv.append(line[2])
+        gpgsv.append(line[3])
+        #checks to see if the data is complete/error free 
+        if not line[3].isdigit():
+            return gpgsv
+        #calculates the amount of satellites in previous sentences
+        prevSV = (int(line[2])-1)*4
+        #calculates the amount of satellites in view in the current sentence
+        amtSV = int(float(line[3]) - prevSV)
+        if amtSV > 4:
+            amtSV = 4
+        #appending lists of data for satellites in view 
+        for x in (range(4,4+amtSV*4,4)):
+            if x == (amtSV*4):
+                foo = line[x:x+3]
+                foo.append(line[x+3][:-5])
+                gpgsv.append(foo)
+            else:
+                gpgsv.append(line[x:x+4])
+        #checksum
+        gpgsv.append(line[len(line)-1])
+        if self.verifyChecksum(line,gpgsv[len(gpgsv)-1]):
+            return gpgsv
 
     def verifyChecksum(self, line, checksum):
         # Take the entire sentence string and remove the initial $ and the * and everything after it
