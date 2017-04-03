@@ -237,7 +237,7 @@ class Analysis:
     '''
         
     def gpgsvParse(self, gpgsv, line):
-        del gpgsv[:]
+        del gpgsv[1:]
         gpgsv.append(line[1])
         gpgsv.append(line[2])
         gpgsv.append(line[3])

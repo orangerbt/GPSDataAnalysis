@@ -67,10 +67,24 @@ class UnitTests(unittest.TestCase):
         with self.assertRaises(Exception):
             gpgsaStub = [0] * 8
             # the checksum on this should be 1E, but it is 1C
-            lineStub = ['GPS DOP and active satellites', 'Automatic', 'No Fix',
-                        ['', '', '', '', '', '', '', '', ''], '', '', '',
-                        '*1C\r\n']
+            lineStub = ['$GPGSA', 'A', '1', '', '', '', '', '', '', '', '', '',
+                        '', '', '', '', '', '*1C\r\n']
             a.gpgsaParse(gpgsaStub, lineStub)
+
+    def testGpgsv(self):
+        a = Analysis()
+        a.main()
+        self.assertEqual(a.gpgsv[0], "GPS Satellites in View")
+        self.assertTrue(len(a.gpgsv) >= 5)
+
+        with self.assertRaises(Exception):
+            gpgsvStub = [0] * 9
+            # the checksum on this should be 7A, but it is 7B
+            lineStub = ['$GPGSV', '1', '1', '04', '16', '65', '040', '24', '09',
+                        '45', '297', '22', '26', '37', '057', '23', '07', '22',
+                        '298', '20*7B\r\n']
+            a.gpgsvParse(gpgsvStub, lineStub)
+            
 
 if __name__ == "__main__":
     unittest.main()
