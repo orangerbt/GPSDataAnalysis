@@ -35,6 +35,13 @@ class Analysis:
             if line[0] == "$GPGSV":
                 self.gpgsv = self.gpgsvParse(self.gpgsv, line)
 
+        print("GPRMC: "+str(self.gprmc))
+        print("GPGGA: "+str(self.gpgga))
+        print("GPGLL: "+str(self.gpgll))
+        print("GPVTG: "+str(self.gpvtg))
+        print("GPGSA: "+str(self.gpgsa))
+        print("GPGSV: "+str(self.gpgsv))
+
    
 
     '''
@@ -124,7 +131,6 @@ class Analysis:
         gpgga[7] = line[9] + line[10]
         gpgga[8] = line[11] + line[12]
         gpgga[9] = line[14]
-        
         if self.verifyChecksum(line, gpgga[9]):
             return gpgga
 
