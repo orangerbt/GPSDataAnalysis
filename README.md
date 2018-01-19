@@ -8,21 +8,6 @@
 	http://www.gpsinformation.org/dale/nmea.htm
 	http://aprs.gids.nl/nmea/
 
-## TODO
-### Parse these
-
-* ~~GPGLL~~
-
-* ~~GPGGA~~
-
-* ~~GPRMC~~
-
-* ~~GPVTG~~
-
-* GPGSA
-
-* GPGSV
-
 ## Credits
 Max Burggraf
 
