@@ -16,24 +16,31 @@ class Analysis:
         self.gpgsv[0] = "GPS Satellites in View"
 
     def main(self):
-        infile = open("gnss.txt", "r")
+        infile = open("test1", "r")
+        outfile = open("output.txt","w")
         lines = infile.readlines()
-        
+
         for line in lines:
             line = line.split(",")
-
             if line[0] == "$GPRMC":
                 self.gprmc = self.gprmcParse(self.gprmc, line)
+                outfile.write(str(self.gprmc) + "\n")
             if line[0] == "$GPGGA":
                 self.gpgga = self.gpggaParse(self.gpgga, line)
+                outfile.write(str(self.gpgga) + "\n")
             if line[0] == "$GPGLL":
                 self.gpgll = self.gpgllParse(self.gpgll, line)
+                outfile.write(str(self.gpgll) + "\n")
             if line[0] == "$GPVTG":
                 self.gpvtg = self.gpvtgParse(self.gpvtg, line)
+                outfile.write(str(self.gpvtg) + "\n")
             if line[0] == "$GPGSA":
                 self.gpgsa = self.gpgsaParse(self.gpgsa, line)
+                outfile.write(str(self.gpgsa) + "\n")
             if line[0] == "$GPGSV":
                 self.gpgsv = self.gpgsvParse(self.gpgsv, line)
+                outfile.write(str(self.gpgsv) + "\n")
+
 
         print("GPRMC: "+str(self.gprmc))
         print("GPGGA: "+str(self.gpgga))
@@ -41,8 +48,9 @@ class Analysis:
         print("GPVTG: "+str(self.gpvtg))
         print("GPGSA: "+str(self.gpgsa))
         print("GPGSV: "+str(self.gpgsv))
+        outfile.close()
 
-   
+
 
     '''
     GPRMC properties
@@ -65,29 +73,28 @@ class Analysis:
 
         directionLat = "+" if line[4] == "N" else "-"
         if line[3] != "":
-            latitude = float(line[3][:-5] + (float(line[3][-5:]) / 60))
+            latitude = float(line[3][:2]) + (float(line[3][2:4])/60) + (float(line[3][5:])/60/60)
         else:
             latitude = 0.0
         gprmc[3] = directionLat + str(latitude)
-
         directionLong = "+" if line[6] == "E" else "-"
         if line[5] != "":
-            longitude = float(line[5][:-5] + (float(line[3][-5:]) / 60))
+            longitude = float(line[5][:3]) + (float(line[5][3:5])/60) + (float(line[5][6:])/60/60)
         else:
             longitude = 0.0
         gprmc[4] = directionLong + str(longitude)
 
         gprmc[5] = line[7]
         gprmc[6] = line[8]
-        
+
         year = ("20" if float(line[9][4:6]) < 50 else "19") + line[9][4:6]
         gprmc[7] = year + "-" + line[9][0:2] + "-" + line[9][2:4]
-        
+
         directionMag = "+" if line[11] == "E" else "-"
         gprmc[8] = directionMag + line[10]
-        
+
         gprmc[9] = line[12]
-        
+
         if self.verifyChecksum(line, gprmc[9]):
             return gprmc
 
@@ -144,7 +151,7 @@ class Analysis:
     gpgll[4] - Data Active or V (void)
     gpgll[5] - checksum data
 
-    '''        
+    '''
 
     def gpgllParse(self, gpgll, line):
          if line[1] != "":
@@ -160,7 +167,7 @@ class Analysis:
          directionLong = "+" if line[4] == "E" else "-"
          gpgll[2] = directionLong + str(longitude)
          gpgll[3] = line[5][0:2] + ":" + line[5][2:4] + ":" + line[5][4:6]
-         gpgll[4] = "Data Active" if line[6] == "A" else "Void" 
+         gpgll[4] = "Data Active" if line[6] == "A" else "Void"
          gpgll[5] = line[7]
          if self.verifyChecksum(line, gpgll[5]):
              return gpgll
@@ -169,7 +176,7 @@ class Analysis:
     '''
 
     GPVTG properties
-    
+
     gpvtg[0] - "Track Made Good and Ground Speed"
     gpvtg[1] - True track made good
     gpvtg[2] - Magnetic track made good
@@ -196,11 +203,11 @@ class Analysis:
     gpgsa[1] - selection of 2D or 3D fix, A for auto, M for manual
     gpgsa[2] - Fix dimensions, 1 for no fix, 2 for 2D fix, 3 for 3D fix
     gpgsa[3] - List of PRNs of satellites used for fix (space for 12)
-    gpgsa[4] - PDOP (dilution of precision) 
+    gpgsa[4] - PDOP (dilution of precision)
     gpgsa[5] - Horizontal dilution of precision (HDOP)
     gpgsa[6] - Vertical dilution of precision (VDOP)
     gpgsa[7] - Checksum
-         
+
     '''
     def gpgsaParse(self, gpgsa, line):
         gpgsa[1] = "Automatic" if line[1] == "A" else "Manual"
@@ -222,7 +229,7 @@ class Analysis:
 
         if self.verifyChecksum(line, gpgsa[7]):
             return gpgsa
-        
+
     '''
     GPGSV properties
 
@@ -232,22 +239,22 @@ class Analysis:
     gpgsv[3] - The number of satellites in view
     gpgsv[4] - Information on satelite in view
                [Information on Satellite PRN number; Elevation in  degrees,
-               90 maximum; Azimuth, degrees from true north, 000 to 359; 
+               90 maximum; Azimuth, degrees from true north, 000 to 359;
                SNR 00-99db (null when not tracking)]
     gpgsv[5] - Information about second SV, same as gpgsv[4]
     gpgsv[6] - Information third second SV, same as gpgsv[4]
     gpgsv[7] - Information fourth second SV, same as gpgsv[4]
     gpgsv[8] - Checksum
-    *Depending on the amount of satellites in view, gpgsv[5-7] may not exist. 
-    In that case, the location of the checksum is gpgsv[len(gpgsv)-1] 
+    *Depending on the amount of satellites in view, gpgsv[5-7] may not exist.
+    In that case, the location of the checksum is gpgsv[len(gpgsv)-1]
     '''
-        
+
     def gpgsvParse(self, gpgsv, line):
         del gpgsv[1:]
         gpgsv.append(line[1])
         gpgsv.append(line[2])
         gpgsv.append(line[3])
-        #checks to see if the data is complete/error free 
+        #checks to see if the data is complete/error free
         if not line[3].isdigit():
             return gpgsv
         #calculates the amount of satellites in previous sentences
@@ -256,7 +263,7 @@ class Analysis:
         amtSV = int(float(line[3]) - prevSV)
         if amtSV > 4:
             amtSV = 4
-        #appending lists of data for satellites in view 
+        #appending lists of data for satellites in view
         for x in (range(4,4+amtSV*4,4)):
             if x == (amtSV*4):
                 foo = line[x:x+3]
@@ -289,6 +296,6 @@ class Analysis:
         return int(checksum, 16) == calculatedSum
 
 
-    
+
 if __name__ == "__main__":
     Analysis().main()
