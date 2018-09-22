@@ -7,6 +7,7 @@
 ## Resources
 	http://www.gpsinformation.org/dale/nmea.htm
 	http://aprs.gids.nl/nmea/
+	https://www.actisense.com/wp-content/uploads/2017/07/NMEA-0183-Information-sheet-issue-4-1-1.pdf
 
 ## Credits
 Max Burggraf
