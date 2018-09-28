@@ -1,5 +1,5 @@
 class Parse:
-
+    import udp
     # Initialize the class variables
     def __init__(self):
         self.holding = ""
@@ -7,7 +7,7 @@ class Parse:
 
 
     def main(self):
-
+        udp.createIdentificationFile()
 
         data = self.read()
         parsedData = self.analyze(data)
@@ -15,7 +15,7 @@ class Parse:
 
     def read(self):
         import serial
-        ser1 = serial.Serial('/dev/pts/17',19200, rtscts=True,dsrdtr=True)  # open serial port
+        ser1 = serial.Serial('/dev/pts/1',19200, rtscts=True,dsrdtr=True)  # open serial port
         ser2 = serial.Serial('/dev/pts/18',19200,rtscts=True,dsrdtr=True,timeout=2)
         print(ser1.name)
         ser1.write('$GPRMC,220652.080,V,,,,,0.00,0.00,160217,,,N*47\n')
@@ -30,7 +30,7 @@ class Parse:
     def analyze(self,data):
         import analysisRT
         art = analysisRT.Analysis()
-        data = art.parseRT(data)
+        #data = art.parseRT(data)
         #print(data)
         return data
 
