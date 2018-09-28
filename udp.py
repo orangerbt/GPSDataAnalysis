@@ -8,10 +8,11 @@ class UDP:
         self.port = 2222
         self.unit = "GPS data unit"
 
-
     def createIdentificationFile(self):
+        #master byte array
         content = bytearray(b'\x00\x00\x00\x00')
-        #content = bytearray('','utf-8')
+
+        #id and description
         identificationMessage = self.desc
         bID = (self.id).encode("utf8")
         #Extending ID to 4 bytes
@@ -24,29 +25,25 @@ class UDP:
 
         #unit
         bUnit = (self.unit).encode("utf8")
-        #byteUnit = int(bUnit).to_bytes(4, byteorder = 'big')
 
         #length for TL
         lengthUnit = (len(bUnit)).to_bytes(4, byteorder = 'big')
-        print(bUnit)
-        print(len(bUnit))
-        print(lengthUnit)
         content.extend(lengthUnit)
 
-
-        import socket
-        #ID + DESC
+        #Add id + desc to content
         content.extend(byteID + bDesc)
         content.extend(bUnit)
-        print(content)
-        sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
 
-        sock.sendto(content, (self.ip, self.port))
+        #actually sending the message
+        self.sendMessage(content)
+
         return
 
-
-
+    def sendMessage(self,byteArray):
+        sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
+        sock.sendto(byteArray, (self.ip, self.port))
 
 if __name__ == "__main__":
+    import socket
     output = UDP()
     output.createIdentificationFile()
