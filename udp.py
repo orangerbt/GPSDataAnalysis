@@ -1,3 +1,4 @@
+import socket
 class UDP:
 
     # Initialize the class variables
@@ -7,6 +8,7 @@ class UDP:
         self.ip = "localhost"
         self.port = 2222
         self.unit = "GPS data unit"
+
 
     def createIdentificationFile(self):
         #master byte array
@@ -35,11 +37,33 @@ class UDP:
         content.extend(bUnit)
 
         #actually sending the message
-        self.sendMessage(content)
+        print(type(content))
+        self.sendData(content)
 
         return
 
-    def sendMessage(self,byteArray):
+    def sendMessage(self,message):
+        content = bytearray(b'')
+        bID = (self.id).encode("utf8")
+        #ID
+        byteID = int(bID).to_bytes(4, byteorder = 'big')
+        content.extend(byteID)
+        bMsg = (message).encode("utf8")
+
+        #length for DAL
+        lengthIdDesc = (len(bMsg)).to_bytes(4, byteorder = 'big')
+        content.extend(lengthIdDesc)
+
+        #TL
+
+        #data
+
+        #Time
+
+        return
+
+    def sendData(self,byteArray):
+        import socket
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
         sock.sendto(byteArray, (self.ip, self.port))
 
