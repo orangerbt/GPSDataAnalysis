@@ -1,4 +1,6 @@
 import socket
+import datetime
+
 class UDP:
 
     # Initialize the class variables
@@ -37,10 +39,10 @@ class UDP:
         content.extend(bUnit)
 
         #actually sending the message
-        print(type(content))
         self.sendData(content)
 
         return
+
 
     def sendMessage(self,message):
         content = bytearray(b'')
@@ -48,22 +50,31 @@ class UDP:
         #ID
         byteID = int(bID).to_bytes(4, byteorder = 'big')
         content.extend(byteID)
-        bMsg = (message).encode("utf8")
+
 
         #length for DAL
-        lengthIdDesc = (len(bMsg)).to_bytes(4, byteorder = 'big')
-        content.extend(lengthIdDesc)
+        lengthMessage = (len(message)).to_bytes(4, byteorder = 'big')
+        content.extend(lengthMessage)
 
-        #TL
-
+        #Time Length
+        time = str(datetime.datetime.now())
+        lengthTime = (len(time)).to_bytes(4, byteorder = 'big')
+        content.extend(lengthTime)
         #data
+        content.extend(message)
 
         #Time
+        bTime = (time).encode("utf8")
+        content.extend(bTime)
+
+        #actually sending the message
+        self.sendData(content)
 
         return
 
     def sendData(self,byteArray):
         import socket
+        print("Sending array " + str(byteArray))
         sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
         sock.sendto(byteArray, (self.ip, self.port))
 

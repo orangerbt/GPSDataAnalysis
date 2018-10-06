@@ -6,13 +6,15 @@ class Analysis:
 
 
     gpgsa - dilution
-    gprmc - latlong/time/
+    gprmc - latlong/time/speed/course
     gpgga - altitude/fix
     '''
     # Initialize the class variables
     def __init__(self):
         self.gprmc = [0] * 10
         self.gprmc[0] = "gprmc"
+        self.gpgll = [0] * 6
+        self.gpgll[0] = "gpgll"
 
     def parseRT(self,data):
         output = []
@@ -22,10 +24,13 @@ class Analysis:
             line = line.split(",")
             if line[0] == "$GPRMC":
                 self.gprmc = self.gprmcParse(self.gprmc, line)
-                output.append(self.gprmc)
+                #output.append(self.gprmc)
                 outputString+='$' + ','.join(self.gprmc)
+                output.append(outputString)
+            if line[0] == "$GPGLL":
+                self.gpgll = self.gpgllParse(self.gpgll, line)
 
-        print(outputString)
+        #print(outputString)
         #print("GPRMC: "+str(self.gprmc))
         return output
 
@@ -71,7 +76,6 @@ class Analysis:
         gprmc[8] = directionMag + line[10]
 
         gprmc[9] = line[12]
-        print(gprmc[9])
 
         if self.verifyChecksum(line, gprmc[9]):
             return gprmc
