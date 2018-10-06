@@ -1,5 +1,5 @@
 import unittest
-from analysis import Analysis
+from gnss-analysis import Analysis
 
 class UnitTests(unittest.TestCase):
 
