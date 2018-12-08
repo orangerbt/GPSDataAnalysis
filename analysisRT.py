@@ -23,7 +23,8 @@ class Analysis:
         outputString = ""
 
         for line in data:
-            line = line.split(",")
+            line = line.decode("utf-8").split(",")
+            print(line)
             if line[0] == "$GPRMC":
                 self.gprmc = self.gprmcParse(self.gprmc, line)
                 #output.append(self.gprmc)
@@ -32,14 +33,17 @@ class Analysis:
             if line[0] == "$GPGSA":
                 self.gpgsa = self.gpgsaParse(self.gpgsa, line)
                 outputString+= "," + self.gpgsa[4]
-                output.append(outputString)
+                output.append("output = " + outputString)
+                print(outputString)
                 outputString = ""
             if line[0] == "$GPGGA":
-                self.gpgga = self.gpggaParse(self.gpgga, line)
+                gpgga = self.gpggaParse(self.gpgga, line)
                 outputString+= "," + self.gpgga[7]
 
         #print(outputString)
         #print("GPRMC: "+str(self.gprmc))
+        for o in output:
+            print("o = " + str(o) + "\n")
         return output
 
     '''
