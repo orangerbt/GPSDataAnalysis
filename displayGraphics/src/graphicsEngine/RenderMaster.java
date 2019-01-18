@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import environment.PhysObject;
+import environment.PhysicsObject;
 import environment.Light;
 import environment.Skybox;
 import utils.MathUtils;
@@ -28,7 +28,7 @@ public class RenderMaster {
 	
 	protected Matrix4f projectionMatrix;
 	protected BasicShader shader;
-	private Map<Obj, List<PhysObject>> allObjects = new HashMap<Obj, List<PhysObject>>();
+	private Map<Obj, List<PhysicsObject>> allObjects = new HashMap<Obj, List<PhysicsObject>>();
 	private ArrayList<Light> lights;
 	
 	public RenderMaster(Display display, BasicShader shader) {
@@ -50,12 +50,12 @@ public class RenderMaster {
 		GL11.glEnable(GL11.GL_DEPTH_TEST | GL11.GL_DEPTH_BUFFER_BIT);
 	}
 	
-	public void renderAllObjects(ArrayList<Light> lights, Camera camera, ArrayList<PhysObject> allObjects) {
+	public void renderAllObjects(ArrayList<Light> lights, Camera camera, ArrayList<PhysicsObject> allObjects) {
 		clearDisplay();
 		shader.start();
 		shader.loadLight(lights);
 		shader.loadViewMatrix(camera); 	
-		for(PhysObject object : allObjects) {
+		for(PhysicsObject object : allObjects) {
 			render(object);
 		}
 		shader.stop(); 
@@ -65,7 +65,7 @@ public class RenderMaster {
 	
 	/*--------------------*/
 	
-	public void render(PhysObject object) {
+	public void render(PhysicsObject object) {
 		GL11.glEnable(GL11.GL_DEPTH_TEST | GL11.GL_DEPTH_BUFFER_BIT);
 		Obj texturedObj = object.getTexturedObj();
 		RawObj obj = texturedObj.getRawObj();
@@ -88,13 +88,13 @@ public class RenderMaster {
 	}
 		
 	/* a batch rendering method. Use case would be if using a large number of models/textures that are the same. */
-	public void batchRender(PhysObject object) {
+	public void batchRender(PhysicsObject object) {
 		Obj model = object.getTexturedObj();
-		List<PhysObject> batch = allObjects.get(model);
+		List<PhysicsObject> batch = allObjects.get(model);
 		if(batch != null) {
 			batch.add(object);
 		}else {
-			List<PhysObject> newBatch = new ArrayList<PhysObject>();
+			List<PhysicsObject> newBatch = new ArrayList<PhysicsObject>();
 			newBatch.add(object);
 			allObjects.put(model, newBatch);
 		}
@@ -102,11 +102,11 @@ public class RenderMaster {
 	
 	
 	/*batch method: */
-	public void render(Map<Obj, List<PhysObject>> objects) {
+	public void render(Map<Obj, List<PhysicsObject>> objects) {
 		for(Obj model : objects.keySet()) {
 			prepTexturedModel(model);
-			List<PhysObject> renderBatch = objects.get(model);
-			for(PhysObject object : renderBatch) {
+			List<PhysicsObject> renderBatch = objects.get(model);
+			for(PhysicsObject object : renderBatch) {
 				prepInstance(object);
 				GL11.glDrawElements(GL11.GL_TRIANGLES, model.getRawObj().getNumVertices(), GL11.GL_UNSIGNED_INT, 0); 
 
@@ -135,7 +135,7 @@ public class RenderMaster {
 		GL30.glBindVertexArray(0);
 	}
 	
-	public void prepInstance(PhysObject object) {
+	public void prepInstance(PhysicsObject object) {
 		Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(object.getPosition(), object.getRotX(),
 				object.getRotY(),object.getRotZ(),object.getScale());
 		ObjTexture texture = object.getTexturedObj().getTexture();
@@ -168,7 +168,7 @@ public class RenderMaster {
 	
 	//---------------------------------------------------------------------//
 	
-	public void render(PhysObject object,BasicShader shader) {
+	public void render(PhysicsObject object,BasicShader shader) {
 		GL11.glEnable(GL11.GL_DEPTH_TEST | GL11.GL_DEPTH_BUFFER_BIT);
 		Obj texturedObj = object.getTexturedObj();
 		RawObj obj = texturedObj.getRawObj();

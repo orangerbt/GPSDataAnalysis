@@ -2,13 +2,13 @@ package physicsEngine;
 
 import org.joml.Vector3f;
 
-import environment.PhysObject;
+import environment.PhysicsObject;
 
 /* handles a collision detection */
 public class Collider {
 	
 	/*Sphere-Sphere Collision */
-	public void sphereCollision(PhysObject a, PhysObject b){
+	public void sphereCollision(PhysicsObject a, PhysicsObject b){
 		float dMomentum = a.getMass() * a.getVelocity().length() - b.getMass()*b.getVelocity().length();
 		Vector3f vec1= a.getVelocity().mul(a.getMass());
 		Vector3f vec2 = b.getVelocity().mul(b.getMass());

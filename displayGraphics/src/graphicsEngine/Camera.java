@@ -3,8 +3,8 @@ package graphicsEngine;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import engine.KeyboardHandler;
-import environment.PhysObject;
+import core.KeyboardHandler;
+import environment.PhysicsObject;
 import static org.lwjgl.glfw.GLFW.*;
 
 
@@ -15,7 +15,7 @@ public class Camera {
 	private float roll;
 	private float pitch;
 	private float yaw;
-	PhysObject object;	
+	PhysicsObject object;	
 	float deltaX;
 	float deltaY;
 	float deltaZ;
@@ -29,7 +29,7 @@ public class Camera {
 	
 	
 	
-	public Camera(PhysObject object, Display display) {
+	public Camera(PhysicsObject object, Display display) {
 		this.object = object;
 		position = new Vector3f(0,0,0);
 		roll = 0;
@@ -85,7 +85,7 @@ public class Camera {
 		return yaw;
 	}
 
-	public PhysObject getObject() {
+	public PhysicsObject getObject() {
 		return object;
 	}
 

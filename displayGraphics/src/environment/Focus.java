@@ -3,12 +3,12 @@ package environment;
 import static org.lwjgl.glfw.GLFW.*;
 import org.joml.Vector3f;
 
-import engine.KeyboardHandler;
+import core.KeyboardHandler;
 import graphicsEngine.Camera;
 import graphicsEngine.Display;
 import graphicsEngine.Obj;
 
-public class Focus extends PhysObject {
+public class Focus extends PhysicsObject {
 	
 	KeyboardHandler keyboardHandler;
 	

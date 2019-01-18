@@ -14,8 +14,9 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
-import engine.KeyboardHandler;
-import engine.MouseHandler;
+
+import core.KeyboardHandler;
+import core.MouseHandler;
 
 public class Display {
 	private long window;

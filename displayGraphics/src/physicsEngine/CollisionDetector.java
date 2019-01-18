@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 import org.joml.Vector3f;
 
-import environment.PhysObject;
+import environment.PhysicsObject;
 
 public class CollisionDetector {
 
-	ArrayList<PhysObject> objects;
+	ArrayList<PhysicsObject> objects;
 	Collider collider;
 	
-	public CollisionDetector(ArrayList<PhysObject> basicObjects) {
+	public CollisionDetector(ArrayList<PhysicsObject> basicObjects) {
 		objects = basicObjects;
 		collider = new Collider();
 	}
@@ -30,7 +30,7 @@ public class CollisionDetector {
 	}
 	
 	
-	public void updateObjectList(ArrayList<PhysObject> objects) {
+	public void updateObjectList(ArrayList<PhysicsObject> objects) {
 		this.objects = objects;
 	}
 	
