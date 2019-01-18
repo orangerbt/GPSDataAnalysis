@@ -1,0 +1,9 @@
+/.classpath
+/.project
+/core/
+/environment/
+/gui/
+/opengl/
+/physics/
+/res/
+/utils/

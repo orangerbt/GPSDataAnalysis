@@ -2,8 +2,8 @@ package environment;
 
 import org.joml.Vector3f;
 
-import graphicsEngine.Obj;
-import physicsEngine.BoundingSphere;
+import opengl.Obj;
+import physics.BoundingSphere;
 
 public class PhysicsObject {
 
@@ -18,7 +18,7 @@ public class PhysicsObject {
 	private float kineticEnergy;
 	private float mass;
 
-	
+
 	public PhysicsObject(Obj texturedObj, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		this.texturedObj = texturedObj;
 		this.position = position;
@@ -33,10 +33,10 @@ public class PhysicsObject {
 		deltaY = 0;
 		deltaZ = 0;
 		boundingSphere = new BoundingSphere(position, scale);
-		
+
 	}
-	
-	
+
+
 	public void update(float dt) {
 		deltaX = velocity.x * dt;
 		deltaY = velocity.y * dt;
@@ -47,33 +47,33 @@ public class PhysicsObject {
 		float dRotZ = angularVel.z * dt;
 		changePosition(deltaX, deltaY, deltaZ);
 		changeRotation(dRotX,dRotY,dRotZ);
-		
+
 	}
-	
-	
-	
+
+
+
 	public void changePosition(float dx,float dy, float dz) {
 		this.position.x += dx;
 		this.position.y += dy;
 		this.position.z += dz;
-		
+
 	}
-	
+
 	public void changeRotation(float rx, float ry, float rz) {
 		rotX += rx;
 		rotY += ry;
 		rotZ += rz;
-		
+
 	}
-	
+
 	public void addVelocity(Vector3f vec) {
 		this.velocity.add(vec);
 	}
-	
+
 	public void addAngularVel(Vector3f vec) {
 		angularVel.add(vec);
 	}
-	
+
 	public void setAngularVel(Vector3f vec) {
 		this.angularVel = vec;
 	}
@@ -86,20 +86,20 @@ public class PhysicsObject {
 	public Vector3f getVelocity() {
 		return velocity;
 	}
-	
+
 	public void setMass(float m) {
 		this.mass = m;
 	}
-	
+
 	public float getMass() {
 		return mass;
 	}
-	
-		
+
+
 	public BoundingSphere getBoundingSphere() {
 		return boundingSphere;
 	}
-	
+
 	public Obj getTexturedObj() {
 		return texturedObj;
 	}
@@ -141,12 +141,12 @@ public class PhysicsObject {
 	public float getRadius() {
 		return scale*4.5f;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 }

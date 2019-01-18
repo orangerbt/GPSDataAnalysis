@@ -1,7 +1,8 @@
 package environment;
 
 import org.joml.Vector3f;
-import graphicsEngine.Obj;
+
+import opengl.Obj;
 
 public class Planet extends PhysicsObject {
 
@@ -10,12 +11,12 @@ public class Planet extends PhysicsObject {
 
 	}
 
-	
-	
-	
+
+
+
 	public void setPlanetRotation(Vector3f vec) {
 		super.setAngularVel(vec);
 	}
 
-  
+
 }

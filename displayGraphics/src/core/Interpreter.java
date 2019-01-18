@@ -1,6 +1,7 @@
 package core;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,12 +13,11 @@ import environment.Light;
 import environment.PhysicsObject;
 import environment.Planet;
 import environment.Skybox;
-import graphicsEngine.AssetLoader;
-import graphicsEngine.Camera;
-import graphicsEngine.OBJLoader;
-import graphicsEngine.Obj;
-import graphicsEngine.ObjTexture;
-import graphicsEngine.RawObj;
+import core.AssetImporter;
+import opengl.Camera;
+import opengl.Obj;
+import opengl.ObjTexture;
+import opengl.RawObj;
 
 
 public class Interpreter {
@@ -33,29 +33,29 @@ public class Interpreter {
 	Skybox skybox2;
 	Camera camera;
 	Planet planet;
-	
+
 	private static int index = 0;
-	
-	
-	public void loadMapData(String filePath, AssetLoader objLoader) {
+
+
+	public void loadMapData(String filePath, AssetImporter objLoader) {
 		String line;
 		try {
-			scan = new Scanner(new File("res/script/"+filePath+"."));
+			scan = new Scanner(new File("res/script/"+filePath+".orbt"));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.println("Missing configuration file, failed to load : " + filePath);
-			
+
 		}
 
 		while(scan.hasNextLine()) {
 			line = scan.nextLine();
 			if(line.length() == 0) {
 				continue;
-				}
+			}
 			if(line.charAt(0) == '#') {
 				continue;
 			}
-			
+
 			String[] data = line.split(" ");
 			if(data[0].equals("Light")) {
 				float x = Float.parseFloat(data[1]);
@@ -80,12 +80,12 @@ public class Interpreter {
 				if(skybox == null) {
 					skybox = new Skybox(new Obj(raw,skyTex),new Vector3f(x,y,z),rx,ry,rz,sc);
 					continue;
-				}else {	
+				}else {
 					skybox2 = new Skybox(new Obj(raw,skyTex),new Vector3f(x,y,z),rx,ry,rz,sc);
 					continue;
 				}
 			}
-			
+
 			if(data[0].equals("Object")) {
 				RawObj raw = objLoader.loadObjModel(data[1]);
 				ObjTexture skyTex = new ObjTexture(objLoader.loadTexture(data[2]));
@@ -100,19 +100,19 @@ public class Interpreter {
 				continue;
 
 			}
-			
+
 			if(data[0].equals("Phy")) {
-					float mass = Float.parseFloat(data[1]);
-					float xVelo = Float.parseFloat(data[2]);
-					float yVelo = Float.parseFloat(data[3]);
-					float zVelo = Float.parseFloat(data[4]);
-					/*angular speed*/
-					float angRotX = Float.parseFloat(data[5]);
-					float angRotY = Float.parseFloat(data[6]);
-					float angRotZ = Float.parseFloat(data[7]);
-					physicsData.add(data);
-					continue;
-					
+				float mass = Float.parseFloat(data[1]);
+				float xVelo = Float.parseFloat(data[2]);
+				float yVelo = Float.parseFloat(data[3]);
+				float zVelo = Float.parseFloat(data[4]);
+				/*angular speed*/
+				float angRotX = Float.parseFloat(data[5]);
+				float angRotY = Float.parseFloat(data[6]);
+				float angRotZ = Float.parseFloat(data[7]);
+				physicsData.add(data);
+				continue;
+
 			}
 			if(data[0].equals("Planet")) {
 				RawObj raw = objLoader.loadObjModel(data[1]);
@@ -127,14 +127,14 @@ public class Interpreter {
 				planet = new Planet(new Obj(raw,skyTex),new Vector3f(x,y,z),rx,ry,rz,sc);
 				continue;
 			}
-			
+
 			System.err.println("Unidentified type :  " + data[0]);
-			
-					
+
+
 		}
 	}
-	
-	
+
+
 	public Scanner getScan() {
 		return scan;
 	}
@@ -154,7 +154,7 @@ public class Interpreter {
 	public ArrayList<Light> getLights() {
 		return lights;
 	}
-	
+
 
 
 	public ObjTexture getSkyboxTex() {
@@ -205,25 +205,25 @@ public class Interpreter {
 			float angRotX = Float.parseFloat(data[5]);
 			float angRotY = Float.parseFloat(data[6]);
 			float angRotZ = Float.parseFloat(data[7]);
-		physicsObjects.get(i).setMass(mass);
-		physicsObjects.get(i).setVelocity(new Vector3f(xVelo,yVelo,zVelo));
-		physicsObjects.get(i).setAngularVel(new Vector3f(angRotX,angRotY,angRotZ));
-		
+			physicsObjects.get(i).setMass(mass);
+			physicsObjects.get(i).setVelocity(new Vector3f(xVelo,yVelo,zVelo));
+			physicsObjects.get(i).setAngularVel(new Vector3f(angRotX,angRotY,angRotZ));
+
 		}
 	}
-	
-	
+
+
 }
-		
-	
 
 
-	
-	
 
-			
-	
 
-	
-	
+
+
+
+
+
+
+
+
 

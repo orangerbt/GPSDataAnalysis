@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import graphicsEngine.Camera;
+import opengl.Camera;
 
 public class MathUtils {
 
@@ -17,28 +17,28 @@ public class MathUtils {
 		matrix.scale(scale);
 		return matrix;
 	}
-	
+
 	public static Matrix4f createTransformationMatrix(Vector2f position, Vector2f scale) {
 		Matrix4f matrix = new Matrix4f();
 		matrix.translate(new Vector3f(position.x,position.y,0));
 		matrix.scale(new Vector3f(scale.x,scale.y,0.0f));
 		return matrix;
 	}
-	
+
 	public static Matrix4f createViewMatrix(Camera camera) {
-	
+
 		Matrix4f viewMatrix = new Matrix4f();
-        viewMatrix.identity();
-        viewMatrix.rotate((float) Math.toRadians(camera.getPitch()), 1,0,0);
-        viewMatrix.rotate((float) Math.toRadians(camera.getYaw()), 0,1,0);
-        viewMatrix.rotate((float) Math.toRadians(camera.getRoll()), 0,0,1);
-        Vector3f cameraPos = camera.getPosition();
-        Vector3f negativeCameraPos = new Vector3f(cameraPos.x,-cameraPos.y,-cameraPos.z);
-        viewMatrix.translate(negativeCameraPos);
-        return viewMatrix;
+		viewMatrix.identity();
+		viewMatrix.rotate((float) Math.toRadians(camera.getPitch()), 1,0,0);
+		viewMatrix.rotate((float) Math.toRadians(camera.getYaw()), 0,1,0);
+		viewMatrix.rotate((float) Math.toRadians(camera.getRoll()), 0,0,1);
+		Vector3f cameraPos = camera.getPosition();
+		Vector3f negativeCameraPos = new Vector3f(cameraPos.x,-cameraPos.y,-cameraPos.z);
+		viewMatrix.translate(negativeCameraPos);
+		return viewMatrix;
 	}
-	
-	
+
+
 	public static float barryCentricInterpolation(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {
 		float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 		float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
@@ -46,7 +46,7 @@ public class MathUtils {
 		float l3 = 1.0f - l1 - l2;
 		return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 	}
-	
-	
-	
+
+
+
 }
